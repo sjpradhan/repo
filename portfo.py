@@ -1,12 +1,9 @@
-import streamlit as st
-from PIL import Image
-import base64
-import pandas as pd
 import pycountry
+import pandas as pd
+from PIL import Image
+import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.io as pio
 
 def main():
     """Main function to define the structure of the portfolio."""
@@ -23,31 +20,49 @@ def main():
 
     # Sub Page For Dashboard
     def retail_performance_dashboard():
+
         # Read Dataset
         order_details = pd.read_excel(
             r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_orders_100.xlsx")
-        supplier_details = pd.read_excel(
-            r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_product_supplier.xlsx")
 
-        replace_dict = {'SILVER': 'Silver', 'GOLD': 'Gold', 'PLATINUM': 'Platinum'}
-        order_details['Customer Status'] = order_details['Customer Status'].replace(replace_dict)
+        @st.cache_data()
+        def load_order_details():
+            order_details = pd.read_excel(r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_orders.xlsx")
 
-        order_details["Profits"] = (
-                order_details["Total Retail Price for This Order"] - order_details["Cost Price Per Unit"])
+            replace_dict = {'SILVER': 'Silver', 'GOLD': 'Gold', 'PLATINUM': 'Platinum'}
+            order_details['Customer Status'] = order_details['Customer Status'].replace(replace_dict)
 
-        merge_data = pd.merge(order_details, supplier_details, on="Product ID", how="inner")
+            order_details["Profits"] = (
+                    order_details["Total Retail Price for This Order"] - order_details["Cost Price Per Unit"])
 
-        int_to_convert_text = ['Customer ID', 'Order ID', 'Product ID', 'Supplier ID']
-        merge_data[int_to_convert_text] = merge_data[int_to_convert_text].astype(str)
+            return order_details
 
-        date_format = ['Date Order was placed', 'Delivery Date']
-        merge_data[date_format] = merge_data[date_format].apply(pd.to_datetime)
-        merge_data[date_format] = merge_data[date_format].apply(lambda x: x.dt.strftime('%d-%m-%Y'))
+        order_details = load_order_details()
+
+        @st.cache_data()
+        def load_and_merge_data():
+
+            supplier_details = pd.read_excel(
+                r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_product_supplier.xlsx")
+
+            merge_data = pd.merge(order_details, supplier_details, on="Product ID", how="inner")
+
+            int_to_convert_text = ['Customer ID', 'Order ID', 'Product ID', 'Supplier ID']
+            merge_data[int_to_convert_text] = merge_data[int_to_convert_text].astype(str)
+
+            date_format = ['Date Order was placed', 'Delivery Date']
+            merge_data[date_format] = merge_data[date_format].apply(pd.to_datetime)
+            merge_data[date_format] = merge_data[date_format].apply(lambda x: x.dt.strftime('%d-%m-%Y'))
+
+            return merge_data
+
+        merge_data = load_and_merge_data()
 
         # Setting up the Streamlit dashboard
         st.title("Retail Performance Dashboard🛒")
 
         st.subheader("KPIs")
+
         col1, col2, col3, col4 = st.columns(4, gap="small")
 
         # Customers metric
@@ -67,7 +82,7 @@ def main():
                 )
                 return fig
             # Create the KPI card figure
-            fig = create_card("Total Customers", total_customers, "coral")
+            fig = create_card("Customers", total_customers, "coral")
             # Display the figure in Streamlit
             st.plotly_chart(fig, use_container_width=True)
 
@@ -158,11 +173,11 @@ def main():
         yoy_df = pd.merge(yoy_sales, yoy_profits, how='left', on='year')
         yoy_df = pd.merge(yoy_df, yoy_revenue, how='left', on='year')
         yoy_df.rename(columns={'year': 'Years'}, inplace=True)
-
+        yoy_df['Years'] = yoy_df['Years'].astype(str)
         with col1:
-            st.table(yoy_df)
+            st.write(yoy_df)
             st.write("We can see here year over year growth & loss in sales, profits, revenue & then we can "
-                     "visulize this in the plot")
+                     "visualize this in the plot.")
 
         with col2:
             # Convert YoY columns to numeric values for plotting
@@ -210,8 +225,6 @@ def main():
         with col2:
             order_details['Delivery Time (Days)'] = (
                     order_details['Delivery Date'] - order_details['Date Order was placed']).dt.days
-            replace_dict = {'SILVER': 'Silver', 'GOLD': 'Gold', 'PLATINUM': 'Platinum'}
-            order_details['Customer Status'] = order_details['Customer Status'].replace(replace_dict)
             average_time_to_deliver = order_details.groupby("Customer Status")[
                 "Delivery Time (Days)"].mean().reset_index()
             fig = px.bar(average_time_to_deliver,
@@ -236,44 +249,91 @@ def main():
 
         st.subheader("Product & Supplier Value")
         st.markdown("___")
-        col1, col2, col3 = st.columns([1, 1, 2], gap="small")
+        col1, col2 = st.columns(2, gap="small")
 
-        with col1:
+        with (col1):
             revenue_products = merge_data.groupby("Product Category")[
-                "Total Retail Price for This Order"].sum().reset_index()
+                "Total Retail Price for This Order"].sum().reset_index(
+            ).sort_values(by = 'Total Retail Price for This Order',ascending = False)
             # Create bar chart using Plotly
             fig = px.bar(revenue_products, x='Product Category', y='Total Retail Price for This Order',
                          title='Revenue by products',
                          labels={'x': 'Product Category', 'y': 'Total Retail Price for This Order'})
             st.plotly_chart(fig, use_container_width=True)
 
-        with col2:
-            def get_country_name(country_code):
-                try:
-                    country = pycountry.countries.get(alpha_2=country_code)
-                    if country:
-                        return country.name
-                    else:
-                        return "Unknown"
-                except:
-                    return "Unknown"
+        with (col2):
+            top_suppliers = merge_data.groupby('Supplier Country')["Supplier Name"].nunique(
+            ).reset_index().sort_values(by="Supplier Name", ascending=False)
 
-            merge_data['CountryName'] = merge_data['Supplier Country'].apply(get_country_name)
-            supplier_country = merge_data["CountryName"].value_counts().reset_index()
-            # Assuming you have already created the 'supplier_country' DataFrame with columns 'index' and 'CountryName'
-            fig = px.bar(supplier_country, x='CountryName', y='count', labels={'CountryName', 'count'},
-                         title='Supplier Countries')
-            st.plotly_chart(fig, use_container_width=True)
-        with col3:
-            top_suppliers = merge_data["Supplier Name"].value_counts().reset_index() \
-                                .sort_values(by='count', ascending=False)[0:10]
             fig = go.Figure(
-                data=[go.Pie(labels=top_suppliers['Supplier Name'], values=top_suppliers['count'], hole=0.5)])
+                data=[go.Pie(labels=top_suppliers['Supplier Name'], values=top_suppliers['Supplier Name'], hole=0.5)])
 
             # Update layout for title and others
             fig.update_layout(title='Top 10 Suppliers Distribution')
             st.plotly_chart(fig, use_container_width=True)
+
+        # Define the function to get country name
+        def get_country_name(country_code):
+            try:
+                country = pycountry.countries.get(alpha_2=country_code)
+                if country:
+                    return country.name
+                else:
+                    return "Unknown"
+            except:
+                return "Unknown"
+
+        # Assuming merge_data DataFrame is already created and has a 'Supplier Country' column
+        merge_data['CountryName'] = merge_data['Supplier Country'].apply(get_country_name)
+
+        # Count the occurrences of each country
+        supplier_country = merge_data['CountryName'].value_counts().reset_index()
+        supplier_country.columns = ['CountryName', 'Count']
+
+        # Create the choropleth map
+        fig = px.choropleth(
+            supplier_country,
+            locations='CountryName',
+            locationmode='country names',
+            color='Count',
+            hover_name='CountryName',
+            color_continuous_scale=px.colors.sequential.Plasma,
+            title='Supplier Countries'
+        )
+        st.plotly_chart(fig)
+
         st.markdown("___")
+        col1, col2, = st.columns(2, gap="small")
+
+        with col1:
+            st.subheader("Insights:")
+            st.markdown("""
+            Over the past five years, the company has demonstrated consistent growth in both sales and profits.
+            The product categories with the highest revenue are Assorted Sports Articles, Clothes, and Outdoors 
+            accounting for a significant portion of the total revenue.Categories with lower revenue, such as 
+            Swim Sports and Indoor Sports, may represent growth opportunities that could be explored further.
+            
+            Silver customers, the largest segment, make up 48% of our customer base. Gold customers are close behind,
+            with 47% in total. Platinum customers, while fewer in percent at 5% represent a valuable segment with high 
+            potential for increased engagement.
+
+            The majority of suppliers are based in the United States, making it the primary source of products.
+            Most deliveries are made within one day, but a few outliers take longer, possibly affecting customer 
+            satisfaction. Investigate and streamline the delivery process to maintain consistency.
+            """)
+
+        with col2:
+            st.subheader("Recommendations:")
+            st.markdown("""
+            Customer Satisfaction Enhancement Focus on strategies to enhance customer satisfaction, such as 
+            improving product quality, customer service, and post-purchase support.
+
+            Supplier Relationship Management Strengthen relationships with the top suppliers and explore 
+            opportunities for strategic partnerships, bulk discounts, or improved terms.
+
+            Optimize Delivery Process Investigate why a small percentage of deliveries take longer than 
+            one day and work on process optimization to ensure timely and consistent deliveries.
+            """)
 
         st.markdown(
             """
@@ -322,7 +382,7 @@ def main():
             , unsafe_allow_html=True
         )
 
-    def unknown_dashboard():
+    def Cohort_Analysis_Dashboard():
         st.title("Projects - Page 1")
 
     def Project1():
@@ -339,18 +399,18 @@ def main():
     # Sidebar and navigation
     st.sidebar.image(portfolio_icon, use_column_width=False, width=200, caption="")
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["Home", "Dashboard", "Projects", "Blogs", "Dataset"])
+    page = st.sidebar.radio("Go to", ["Home", "Dashboard", "Projects", "Blogs", "Datasets"])
 
     # Main content based on selected page
     if page == "Home":
         Home()
 
     elif page == "Dashboard":
-        subpage = st.sidebar.radio("View Dashboards", ["Retail Performance Dashboard", "Unknown Dashboard"])
+        subpage = st.sidebar.radio("View Dashboards", ["Retail Performance Dashboard", "Cohort Analysis Dashboard"])
         if subpage == "Retail Performance Dashboard":
             retail_performance_dashboard()
-        elif subpage == "Unknown Dashboard":
-            unknown_dashboard()
+        elif subpage == "Cohort Analysis Dashboard":
+            Cohort_Analysis_Dashboard()
 
     elif page == "Projects":
         subpage = st.sidebar.radio("View All Projects", ["Project1", "Project2", "Project3"])
@@ -363,8 +423,8 @@ def main():
 
     elif page == "Blogs":
         Blogs()
-    elif page == "Dataset":
-        Dataset()
+    elif page == "Datasets":
+        Datasets()
 
 def Home():
     """Home section."""
@@ -383,48 +443,75 @@ def Home():
     # Add a spacer div to create space
     st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
 
+    # Create two columns
+    col1, col2 = st.columns(2)
+
     # Define Image
     profile_photo = r"C:\Users\satya\PycharmProjects\portflios\Profile\Profile picture.jpg"
+    try:
+        # Add content to the first column
+        with col1:
+            st.title("My Name")
+            st.subheader("Software Engineer")
+            st.write("""
+        Hi, I'm [Your Name], a data scientist passionate about solving real-world problems using data. 
+        I have experience in machine learning, data analysis, and visualization. 
+        This is my portfolio showcasing some of my projects and skills.
+        """)
+    except:
+        pass
+
+    try:
+        # Add content to the second column
+        with col2:
+            # Display the image using HTML img tag and apply CSS animation
+            st.markdown(f"""
+                        <img src="{profile_photo}" class="zooming-image" style="width:100%; animation: zoomIn 5s ease-in-out;">
+                        <style>
+                            @keyframes zoomIn {{
+                                from {{
+                                    transform: scale(1);
+                                }}
+                                to {{
+                                    transform: scale(1.1);
+                                }}
+                            }}
+                            .zooming-image {{
+                                animation-fill-mode: forwards;
+                            }}
+                        </style>
+                    """, unsafe_allow_html=True)
+    except:
+        pass
+
     # Create two columns
     col1, col2 = st.columns(2)
 
-    # Add content to the first column
-    with col1:
-        st.title("My Name")
-        st.subheader("Software Engineer")
-        st.write("""
-    Hi, I'm [Your Name], a data scientist passionate about solving real-world problems using data. 
-    I have experience in machine learning, data analysis, and visualization. 
-    This is my portfolio showcasing some of my projects and skills.
-    """)
+    try:
+        with col1:
+            st.subheader("Soft Skills")
+            st.markdown("---")
+            st.write("""
+                - Data Analysis ⭐⭐⭐⭐⭐
+                - Machine Learning ⭐⭐⭐⭐⭐
+                - Data Visualization ⭐⭐⭐⭐⭐
+                - Python Programming ⭐⭐⭐⭐⭐
+                """)
+    except:
+        pass
 
-    # Add content to the second column
-    with col2:
-        st.image(profile_photo, use_column_width=True)
-
-
-    # Create two columns
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("Soft Skills")
-        st.markdown("---")
-        st.write("""
-            - Data Analysis ⭐⭐⭐⭐⭐
-            - Machine Learning ⭐⭐⭐⭐⭐
-            - Data Visualization ⭐⭐⭐⭐⭐
-            - Python Programming ⭐⭐⭐⭐⭐
-            """)
-
-    with col2:
-        st.subheader("Technical Skills")
-        st.markdown("--------------")
-        st.write("""
-                    - Data Analysis ⭐⭐⭐⭐⭐
-                    - Machine Learning ⭐⭐⭐⭐⭐
-                    - Data Visualization ⭐⭐⭐⭐⭐
-                    - Python Programming ⭐⭐⭐⭐⭐
-                    """)
+    try:
+        with col2:
+            st.subheader("Technical Skills")
+            st.markdown("--------------")
+            st.write("""
+                        - Data Analysis ⭐⭐⭐⭐⭐
+                        - Machine Learning ⭐⭐⭐⭐⭐
+                        - Data Visualization ⭐⭐⭐⭐⭐
+                        - Python Programming ⭐⭐⭐⭐⭐
+                        """)
+    except:
+        pass
 
 # Dashboard in home section-------------------------------------------------------------------------
     st.markdown(
@@ -441,22 +528,44 @@ def Home():
     st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
 
     st.header("Dashboard")
-    st.markdown("--------------")
-    st.subheader("Sales & Profit Dashboard")
-    if st.button("View Sales & Profit Dashboard"):
-        # Replace the URL with your LinkedIn profile URL
-        st.markdown("[Projet1](https://www.linkedin.com/your-profile)")
-    dashboard = r"C:\Users\satya\PycharmProjects\portflios\Dashboard\Dashboard.jpg"
-    st.image(dashboard,use_column_width=True)
-    st.write("write description here.....")
+    st.markdown("---")
 
-    st.subheader("Customer Retention")
-    if st.button("View Customer Retention Dashboard"):
-        # Replace the URL with your LinkedIn profile URL
-        st.markdown("[Projet1](https://www.linkedin.com/your-profile)")
-    dashboard = r"C:\Users\satya\PycharmProjects\portflios\Dashboard\Dashboard.jpg"
-    st.image(dashboard,use_column_width=True)
-    st.write("write description here.....")
+    try:
+        dashboard = r"C:\Users\satya\PycharmProjects\portflios\Dashboard\Dashbaord1.png"
+        st.image(dashboard,use_column_width=True)
+        st.markdown("[__Retail Performance Dashboard__](https://sjpradhan.github.io/portfolio/)")
+        st.write("""
+        The retail business has been operating for five years, successfully selling over 100K products across 
+        various categories including Children's Products, Clothes & Shoes, Outdoors Products, and Sports Products. 
+        To further expansion, stakeholders are keen on leveraging data-driven insights from both supplier and 
+        sales data.
+        
+        Initial steps involve cleaning the data and performing feature engineering to extract meaningful insights. 
+        Utilizing a dashboard, I have present segmented findings across various dimensions such as year-over-year sales,
+        profits, and revenue. 
+        
+        Key performance indicators (KPIs) prominently displayed, encompassing total customers, total sales, 
+        total profits, and total revenue. Additionally, I have delve into month-over-month and year-over-year growth 
+        trends, Further analysis will spotlight supplier origins and identify top-performing suppliers. The dashboard 
+        highlight products generating the highest revenue, along with their average delivery times. Lastly, 
+        insights provided on the most frequent and valuable customers, aiding in strategic decision-making 
+        for future growth and profitability.
+        """)
+    except:
+        pass
+
+
+    st.subheader("Customer Retention Analysis Dashboard")
+
+    try:
+        if st.button("View Customer Retention Dashboard"):
+            # Replace the URL with your LinkedIn profile URL
+            st.markdown("[Projet1](https://www.linkedin.com/your-profile)")
+        dashboard = r"C:\Users\satya\PycharmProjects\portflios\Dashboard\Slide1.PNG"
+        st.image(dashboard,use_column_width=True)
+        st.write("write description here.....")
+    except:
+        pass
 
 # Projects in home section--------------------------------------------------------------------------
     st.markdown(
@@ -473,31 +582,42 @@ def Home():
     st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
 
     st.header("Projects")
-    st.markdown("--------------")
-    col1, col2,col3 = st.columns(3)
-    with col1:
-        project1pic = r"C:\Users\satya\PycharmProjects\portflios\Projects\Project1.jpg"
-        if st.button("View Project1"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet1](https://www.linkedin.com/your-profile)")
-        st.image(project1pic,use_column_width=True)
-        st.write("Write description here....")
+    st.markdown("---")
 
-    with col2:
-        project2pic = r"C:\Users\satya\PycharmProjects\portflios\Projects\Project2.jpg"
-        if st.button("View Project2"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
-        st.image(project2pic, use_column_width=True)
-        st.write("Write description here....")
+    col1, col2, col3 = st.columns(3)
 
-    with col3:
-        project3pic = r"C:\Users\satya\PycharmProjects\portflios\Projects\Project3.jpg"
-        if st.button("View Project3"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet3](https://www.linkedin.com/your-profile)")
-        st.image(project3pic, use_column_width=True)
-        st.write("Write description here....")
+    try:
+        with col1:
+            project1pic = r"C:\Users\satya\PycharmProjects\portflios\Projects\Project1.jpg"
+            if st.button("View Project1"):
+                # Replace the URL with your LinkedIn profile URL
+                st.markdown("[Projet1](https://www.linkedin.com/your-profile)")
+            st.image(project1pic,use_column_width=True)
+            st.write("Write description here....")
+    except:
+        pass
+
+    try:
+        with col2:
+            project2pic = r"C:\Users\satya\PycharmProjects\portflios\Projects\Project2.jpg"
+            if st.button("View Project2"):
+                # Replace the URL with your LinkedIn profile URL
+                st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
+            st.image(project2pic, use_column_width=True)
+            st.write("Write description here....")
+    except:
+        pass
+
+    try:
+        with col3:
+            project3pic = r"C:\Users\satya\PycharmProjects\portflios\Projects\Project3.jpg"
+            if st.button("View Project3"):
+                # Replace the URL with your LinkedIn profile URL
+                st.markdown("[Projet3](https://www.linkedin.com/your-profile)")
+            st.image(project3pic, use_column_width=True)
+            st.write("Write description here....")
+    except:
+        pass
 
 # Blogs in home section--------------------------------------------------------------------------
     st.markdown(
@@ -513,37 +633,55 @@ def Home():
     # Add a spacer div to create space
     st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
     st.subheader("Blogs")
-    st.markdown("--------------")
+    st.markdown("___")
+
     col1, col2, col3,col4 = st.columns(4)
-    with col1:
-        blog1 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog1.jpg"
-        st.image(blog1, use_column_width=True)
-        st.write("Write description here....")
-        if st.button("Click1"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
-    with col2:
-        blog2 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog2.jpg"
-        st.image(blog2, use_column_width=True)
-        st.write("Write description here....")
-        if st.button("Click2"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
-    with col3:
-        blog3 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog3.jpg"
-        st.image(blog3, use_column_width=True)
-        st.write("Write description here....")
-        if st.button("Click3"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
-    with col4:
-        blog4 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog4.jpg"
-        st.image(blog4, use_column_width=True)
-        st.write("Write description here....")
-        if st.button("Click4"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
-    st.markdown("--------------")
+
+    try:
+        with col1:
+            blog1 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog1.jpg"
+            st.image(blog1, use_column_width=True)
+            st.write("Write description here....")
+            if st.button("Click1"):
+                # Replace the URL with your LinkedIn profile URL
+                st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
+    except:
+        pass
+
+    try:
+        with col2:
+            blog2 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog2.jpg"
+            st.image(blog2, use_column_width=True)
+            st.write("Write description here....")
+            if st.button("Click2"):
+                # Replace the URL with your LinkedIn profile URL
+                st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
+    except:
+        pass
+
+    try:
+        with col3:
+            blog3 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog3.jpg"
+            st.image(blog3, use_column_width=True)
+            st.write("Write description here....")
+            if st.button("Click3"):
+                # Replace the URL with your LinkedIn profile URL
+                st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
+    except:
+        pass
+
+    try:
+        with col4:
+            blog4 = r"C:\Users\satya\PycharmProjects\portflios\Blogs\blog4.jpg"
+            st.image(blog4, use_column_width=True)
+            st.write("Write description here....")
+            if st.button("Click4"):
+                # Replace the URL with your LinkedIn profile URL
+                st.markdown("[Projet2](https://www.linkedin.com/your-profile)")
+    except:
+        pass
+
+    st.markdown("---")
 
 # Add footer------------------------------------------------------------------------------------------------
     st.markdown(
@@ -593,18 +731,6 @@ def Home():
         , unsafe_allow_html=True
     )
 
-def Dashboard():
-    st.subheader("Dashboard1")
-    dashboard = "Dashboard.jpg"
-    st.image(dashboard, use_column_width=True)
-    st.write("write description here.....")
-
-    st.subheader("Dashboard2")
-    dashboard = "Dashboard.jpg"
-    st.image(dashboard, use_column_width=True)
-    st.write("write description here.....")
-
-
 def Blogs():
 
     st.title("About Me")
@@ -622,49 +748,73 @@ def Blogs():
     - Python Programming
     """)
 
-def Dataset():
+def Datasets():
     """Dataset Section."""
 
-    col1, col2, col3 , col4 = st.columns([0.7,1,0.2,1])
-    with col2:
-        st.title("Datasets")
-    with col3:
-        st.image(r"C:\Users\satya\PycharmProjects\portflios\Icons\dataset_6802146.png", width=100)
+    try:
+        col1, col2, col3 , col4 = st.columns([0.7, 1, 0.2, 1])
 
-    st.markdown("___")
-    st.subheader("Retail Performance Analysis Data")
+        with col2:
+            st.title("Datasets")
+
+        with col3:
+            st.image(r"C:\Users\satya\PycharmProjects\portflios\Icons\dataset_6802146.png", width=100)
+
+        st.markdown("___")
+        st.subheader("Retail Performance Analysis Data")
+    except:
+        pass
+
     col1, col2 = st.columns(2)
-    with col1:
-        # Read Dataset
-        order_details = pd.read_excel(
-            r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_orders_100.xlsx")
 
-        int_to_convert_text = ['Customer ID', 'Order ID', 'Product ID']
-        order_details[int_to_convert_text] = order_details[int_to_convert_text].astype(str)
+    try:
+        with col1:
+            # Read Dataset
+            order_details = pd.read_excel(
+                r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_orders_100.xlsx")
 
-        date_format = ['Date Order was placed', 'Delivery Date']
-        order_details[date_format] = order_details[date_format].apply(pd.to_datetime)
-        order_details[date_format] = order_details[date_format].apply(lambda x: x.dt.strftime('%d-%m-%Y'))
+            int_to_convert_text = ['Customer ID', 'Order ID', 'Product ID']
+            order_details[int_to_convert_text] = order_details[int_to_convert_text].astype(str)
 
-        st.write("Order's Data Preview:")
-        st.download_button(label="⬇️", data=order_details.to_csv(), file_name="order_details.csv",
-                           mime="text/csv")
+            date_format = ['Date Order was placed', 'Delivery Date']
+            order_details[date_format] = order_details[date_format].apply(pd.to_datetime)
+            order_details[date_format] = order_details[date_format].apply(lambda x: x.dt.strftime('%d-%m-%Y'))
 
-        st.write(order_details.head())
+            st.write("Order's Data Preview:")
+            st.download_button(label="Download", data=order_details.to_csv(), file_name="order_details.csv",
+                               mime="text/csv")
+            st.write(order_details.head())
+            st.write("""
+            The order's table comprises customer data categorized into silver, gold, and platinum tiers, along with 
+            corresponding order details such as order date, delivery date, order ID, product ID, quantity ordered, 
+            total retail price, selling price, and cost price.
+            """)
 
-    with col2:
-        # Read Dataset
-        supplier_details = pd.read_excel(
-            r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_product_supplier.xlsx")
 
-        int_to_convert_text = ['Product ID','Supplier ID']
-        supplier_details[int_to_convert_text] = supplier_details[int_to_convert_text].astype(str)
 
-        st.write("Supplier's Data Preview:")
-        st.download_button(label="⬇️", data=supplier_details.to_csv(),
-                           file_name="supplier_details.csv", mime="text/csv")
+    except:
+        pass
 
-        st.write(supplier_details.head())
+    try:
+        with col2:
+            # Read Dataset
+            supplier_details = pd.read_excel(
+                r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_product_supplier.xlsx")
+
+            int_to_convert_text = ['Product ID','Supplier ID']
+            supplier_details[int_to_convert_text] = supplier_details[int_to_convert_text].astype(str)
+
+            st.write("Supplier's Data Preview:")
+            st.download_button(label="⬇️", data=supplier_details.to_csv(),
+                               file_name="supplier_details.csv", mime="text/csv")
+
+            st.write(supplier_details.head())
+            st.write("""
+            The Supplier's table includes product information such as product ID, product line, product category, and 
+            product group. It also lists each product's name, supplier country code, supplier name, and supplier ID.
+            """)
+    except:
+        pass
 
 if __name__ == "__main__":
     main()
