@@ -34,24 +34,6 @@ def main():
     # Sub Page For Dashboard
     def retail_performance_dashboard():
 
-        # Header
-        st.markdown(
-            """
-            <style>
-            .header {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background-color: #f4f4f4;
-                padding: 10px 0;
-                text-align: center;
-            }
-            </style>
-            """
-            , unsafe_allow_html=True
-        )
-
         @st.cache_resource
         def load_order_details():
             # Define file path of order details data
@@ -441,52 +423,42 @@ def main():
         # Footer
         st.markdown(
             """
-            <div class="footer">
-                Footer content goes here
-            </div>
+            <style>
+            .footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: #f4f4f4;
+                padding: 10px 0;
+                text-align: center;
+            }
+            </style>
             """
             , unsafe_allow_html=True
         )
 
-        # # Footer
-        # st.markdown(
-        #     """
-        #     <style>
-        #     .footer {
-        #         position: fixed;
-        #         bottom: 0;
-        #         left: 0;
-        #         width: 100%;
-        #         background-color: #f4f4f4;
-        #         padding: 10px 0;
-        #         text-align: center;
-        #     }
-        #     </style>
-        #     """
-        #     , unsafe_allow_html=True
-        # )
-        #
-        # # Icons
-        # st.markdown(
-        #     """
-        #     <script>
-        #     function scrollToTop() {
-        #         window.scrollTo({
-        #             top: 0,
-        #             behavior: 'smooth'
-        #         });
-        #     }
-        #     </script>
-        #     <div class="footer">
-        #         <a href="https://github.com/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/github-logo.png width="30" height="30"></a>
-        #         &nbsp;&nbsp;&nbsp;&nbsp;
-        #         <a href="mailto:sjpradan@gmail.com"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/gmail.png width="30" height="30"></a>
-        #         &nbsp;&nbsp;&nbsp;&nbsp;
-        #         <a href="https://www.linkedin.com/in/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/linkedin.png width="30" height="30"></a>
-        #     </div>
-        #     """
-        #     , unsafe_allow_html=True
-        # )
+        # Icons
+        st.markdown(
+            """
+            <script>
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+            </script>
+            <div class="footer">
+                <a href="https://github.com/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/github-logo.png width="30" height="30"></a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="mailto:sjpradan@gmail.com"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/gmail.png width="30" height="30"></a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="https://www.linkedin.com/in/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/linkedin.png width="30" height="30"></a>
+            </div>
+            """
+            , unsafe_allow_html=True
+        )
 
     def Cohort_Analysis_Dashboard():
         st.title("Projects - Page 1")
