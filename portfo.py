@@ -259,26 +259,27 @@ def main():
         except:
             pass
 
-        try:
-            with col2:
+
+        with col2:
+            try:
                 order_details['Delivery Time (Days)'] = (
                         order_details['Delivery Date'] - order_details['Date Order was placed']).dt.days
                 average_time_to_deliver = order_details.groupby("Customer Status")[
                     "Delivery Time (Days)"].mean().reset_index()
                 fig = px.bar(average_time_to_deliver,
-                             x='Customer Status',
-                             y='Delivery Time (Days)',
-                             title='Average Day to Deliver by Customer Status',
-                             width=100,  # Set figure width
-                             height=350,  # Set figure height
-                             )
+                            x='Customer Status',
+                            y='Delivery Time (Days)',
+                            title='Average Day to Deliver by Customer Status',
+                            width=100,  # Set figure width
+                            height=350,  # Set figure height
+                            )
                 fig.update_traces(marker=dict(line=dict(width=2)),  # Customize bar width
-                                  selector=dict(type='bar')
-                                  )
+                                selector=dict(type='bar')
+                                )
                 st.plotly_chart(fig, use_container_width=True)
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-            pass
+            except Exception as e:
+                st.error(f"An error occurred to plot delay time by customer segments: {e}")
+                pass
 
         try:
             with col3:
