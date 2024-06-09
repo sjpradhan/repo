@@ -759,7 +759,7 @@ def Home():
 
     st.markdown("---")
 
-# Add footer------------------------------------------------------------------------------------------------
+# Footer
     st.markdown(
         """
         <style>
@@ -772,17 +772,12 @@ def Home():
             padding: 10px 0;
             text-align: center;
         }
-        .up-arrow {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
         </style>
         """
         , unsafe_allow_html=True
     )
 
+    # Icons
     st.markdown(
         """
         <script>
@@ -794,14 +789,11 @@ def Home():
         }
         </script>
         <div class="footer">
-            <a href="https://github.com/yourusername"><img src="github-logo.png" width="30" height="30"></a>
+            <a href="https://github.com/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/github-logo.png width="30" height="30"></a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="mailto:sjpradan@gmail.com"><img src="gmail.png" width="30" height="30"></a>
+            <a href="mailto:sjpradan@gmail.com"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/gmail.png width="30" height="30"></a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="https://linkedin.com/yourusername"><img src="linkedin.png" width="30" height="30"></a>
-            <div class="up-arrow" onclick="scrollToTop()">
-                <img src="uparrow.png" width="30" height="30">
-            </div>
+            <a href="https://www.linkedin.com/in/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/linkedin.png width="30" height="30"></a>
         </div>
         """
         , unsafe_allow_html=True
