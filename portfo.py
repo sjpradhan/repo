@@ -419,6 +419,55 @@ def main():
             st.error(f"error in writing insights & recommendations {e}")
             pass
 
+        # # Footer
+        # st.markdown(
+        #     """
+        #     <style>
+        #     .footer {
+        #         position: fixed;
+        #         bottom: 0;
+        #         left: 0;
+        #         width: 100%;
+        #         background-color: #f4f4f4;
+        #         padding: 10px 0;
+        #         text-align: center;
+        #     }
+        #     .up-arrow {
+        #         position: fixed;
+        #         top: 10px;
+        #         right: 50px;
+        #         cursor: pointer;
+        #     }
+        #     </style>
+        #     """
+        #     , unsafe_allow_html=True
+        # )
+        #
+        # #Icons
+        # st.markdown(
+        #     """
+        #     <script>
+        #     function scrollToTop() {
+        #         window.scrollTo({
+        #             top: 0,
+        #             behavior: 'smooth'
+        #         });
+        #     }
+        #     </script>
+        #     <div class="footer">
+        #         <a href="https://github.com/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/github-logo.png width="30" height="30"></a>
+        #         &nbsp;&nbsp;&nbsp;&nbsp;
+        #         <a href="mailto:sjpradan@gmail.com"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/gmail.png width="30" height="30"></a>
+        #         &nbsp;&nbsp;&nbsp;&nbsp;
+        #         <a href="https://www.linkedin.com/in/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/linkedin.png width="30" height="30"></a>
+        #         <div class="up-arrow" onclick="scrollToTop()">
+        #             <img src= https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/uparrow.png width="30" height="30">
+        #         </div>
+        #     </div>
+        #     """
+        #     , unsafe_allow_html=True
+        # )
+
         # Footer
         st.markdown(
             """
@@ -432,18 +481,12 @@ def main():
                 padding: 10px 0;
                 text-align: center;
             }
-            .up-arrow {
-                position: fixed;
-                top: 10px;
-                right: 50px;
-                cursor: pointer;
-            }
             </style>
             """
             , unsafe_allow_html=True
         )
 
-        #Icons
+        # Icons
         st.markdown(
             """
             <script>
@@ -460,9 +503,9 @@ def main():
                 <a href="mailto:sjpradan@gmail.com"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/gmail.png width="30" height="30"></a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="https://www.linkedin.com/in/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/linkedin.png width="30" height="30"></a>
-                <div class="up-arrow" onclick="scrollToTop()">
-                    <img src= https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/uparrow.png width="30" height="30">
-                </div>
+            </div>
+            <div class="up-arrow" onclick="scrollToTop()" style="position: fixed; bottom: 20px; right: 20px;">
+                <img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/uparrow.png width="30" height="30">
             </div>
             """
             , unsafe_allow_html=True
