@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 def main():
     """Main function to define the structure of the portfolio."""
 
+    # Define file path of profile icon
     profile_icon = "https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/user.png"
 
     # Fetch the image from the URL
@@ -19,14 +20,14 @@ def main():
     profile_icon = Image.open(BytesIO(response.content))
     st.set_page_config(page_title="Satyajit Portfolio", page_icon=profile_icon,layout = "wide")
 
-    # Load Image
+    # Define file path of portfolio icon
     portfolio_icon = "https://raw.githubusercontent.com/sjpradhan/repo/master/Profile/Portfolio%20logo.png"
 
     # Fetch the image from the URL
     response = requests.get(portfolio_icon)
 
+    # Open the image using PIL
     portfolio_icon = Image.open(BytesIO(response.content))
-
     st.image(portfolio_icon, use_column_width=False, width=370, caption="")
 
     # Sub Page For Dashboard
@@ -34,8 +35,10 @@ def main():
 
         @st.cache_resource
         def load_order_details():
+            # Define file path of order details data
             order_details_path = ("https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/"
                                   "raw_data_orders.csv")
+            # Get data
             order_details = pd.read_csv(order_details_path)
 
             return order_details
@@ -50,10 +53,13 @@ def main():
 
         @st.cache_resource
         def load_and_merge_data():
+            # Define file path of supplier details data
             suppler_details_path = ("https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/"
                                     "raw_data_product_supplier.csv")
+            # Get data
             supplier_details = pd.read_csv(suppler_details_path)
 
+            # Merge data to full view
             merge_data = pd.merge(order_details, supplier_details, on="Product ID", how="inner")
 
             int_to_convert_text = ['Customer ID', 'Order ID', 'Product ID', 'Supplier ID']
@@ -168,7 +174,8 @@ def main():
                 fig = create_card("Revenue", total_revenue, "coral")
                 # Display the figure in Streamlit
                 st.plotly_chart(fig, use_container_width=True)
-        except:
+        except Exception as e:
+            st.error(f"error in KPI field,{e}")
             pass
 
 
@@ -202,11 +209,13 @@ def main():
                 st.write(yoy_df)
                 st.write("We can see here year over year growth & loss in sales, profits, revenue & then we can "
                          "visualize this in the plot.")
-        except:
+        except Exception as e:
+            st.write(f"error in YOY Growth table {e}")
             pass
 
-        try:
-            with col2:
+
+        with col2:
+            try:
                 # Convert YoY columns to numeric values for plotting
                 yoy_df['Sales YOY'] = yoy_df['Sales YOY'].str.rstrip('%').astype(float)
                 yoy_df['Profits YOY'] = yoy_df['Profits YOY'].str.rstrip('%').astype(float)
@@ -225,8 +234,9 @@ def main():
                     legend_title='Metrics'
                 )
                 st.plotly_chart(fig, use_container_width=False)
-        except:
-            pass
+            except Exception as e:
+                st.error(f"error in YOY Growth chart {e}")
+                pass
 
         try:
             st.subheader("Monthly Growth")
@@ -243,23 +253,27 @@ def main():
                           height=250)
             st.plotly_chart(fig, use_container_width=True)
 
-        except:
+        except Exception as e:
+            st.error(f"error in monthly growth chart {e}")
             pass
 
 
         st.subheader("Customer Relation")
         st.markdown("___")
+
         col1, col2, col3 = st.columns(3, gap="small")
 
-        try:
-            with col1:
+        # Customer Distribution
+        with col1:
+            try:
                 customer_distribution = order_details["Customer Status"].value_counts().reset_index()
                 fig = px.pie(customer_distribution, values="count", names='Customer Status', title='Customers distribution')
                 st.plotly_chart(fig, use_container_width=True)
-        except:
-            pass
+            except Exception as e:
+                st.error(f"error in customer distribution chart {e}")
+                pass
 
-
+        # Average delay time
         with col2:
             try:
                 order_details['Delivery Date'] = pd.to_datetime(order_details['Delivery Date'])
@@ -284,24 +298,28 @@ def main():
                 st.error(f"An error occurred to plot delay time by customer segments: {e}")
                 pass
 
-        try:
-            with col3:
+
+        # Top 10 customers
+        with col3:
+            try:
                 top_suppliers = order_details.groupby("Customer ID")["Quantity Ordered"].sum().reset_index() \
                     .sort_values(by="Quantity Ordered", ascending=False).head(10)
 
                 fig = px.pie(top_suppliers, values="Quantity Ordered", names='Customer ID', title='Top 10 Customers')
 
                 st.plotly_chart(fig, use_container_width=True)
-        except:
-            pass
+            except Exception as e:
+                st.error(f"error in top10 customer chart {e}")
+                pass
 
 
         st.subheader("Product & Supplier Value")
         st.markdown("___")
         col1, col2 = st.columns(2, gap="small")
 
-        try:
-            with (col1):
+        # Revenue by products
+        with (col1):
+            try:
                 revenue_products = merge_data.groupby("Product Category")[
                     "Total Retail Price for This Order"].sum().reset_index(
                 ).sort_values(by = 'Total Retail Price for This Order',ascending = False)
@@ -310,11 +328,13 @@ def main():
                              title='Revenue by products',
                              labels={'x': 'Product Category', 'y': 'Total Retail Price for This Order'})
                 st.plotly_chart(fig, use_container_width=True)
-        except:
-            pass
+            except Exception as e:
+                st.error(f"error in revenue by products {e}")
+                pass
 
-        try:
-            with (col2):
+        # Top suppliers
+        with (col2):
+            try:
                 top_suppliers = merge_data.groupby('Supplier Country')["Supplier Name"].nunique(
                 ).reset_index().sort_values(by="Supplier Name", ascending=False)
 
@@ -324,8 +344,9 @@ def main():
                 # Update layout for title and others
                 fig.update_layout(title='Top 10 Suppliers Distribution')
                 st.plotly_chart(fig, use_container_width=True)
-        except:
-            pass
+            except Exception as e:
+                st.error(f"error in top 10 suppliers {e}")
+                pass
 
         try:
         # Define the function to get country name
@@ -357,7 +378,8 @@ def main():
                 title='Supplier Countries'
             )
             st.plotly_chart(fig)
-        except:
+        except Exception as e:
+            st.error(f"error to show map {e}")
             pass
 
         try:
@@ -393,7 +415,8 @@ def main():
                 Optimize Delivery Process Investigate why a small percentage of deliveries take longer than
                 one day and work on process optimization to ensure timely and consistent deliveries.
                 """)
-        except:
+        except Exception as e:
+            st.error(f"error in writing insights & recommendations {e}")
             pass
 
         st.markdown(
