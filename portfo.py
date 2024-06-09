@@ -72,324 +72,324 @@ def main():
 
         st.subheader("KPIs")
 
-        # col1, col2, col3, col4 = st.columns(4, gap="small")
-        #
-        # # Customers metric
-        # with col1:
-        #     total_customers = order_details["Customer ID"].nunique()
-        #     def create_card(title, value, color):
-        #         fig = go.Figure(go.Indicator(
-        #             mode="number",
-        #             value=value,
-        #             title={"text": f"<b>{title}</b>"},
-        #             number={"font": {"size": 45, "color": color,"family": "Arial, sans-serif"}},
-        #             domain={'x': [0, 1], 'y': [0, 1]}
-        #         ))
-        #         fig.update_layout(
-        #             margin=dict(l=20, r=20, t=40, b=20),
-        #             height=200,
-        #         )
-        #         return fig
-        #     # Create the KPI card figure
-        #     fig = create_card("Customers", total_customers, "coral")
-        #     # Display the figure in Streamlit
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # # Sales metric
-        # with col2:
-        #     total_sales = order_details["Quantity Ordered"].sum()
-        #     def create_card(title, value, color):
-        #         fig = go.Figure(go.Indicator(
-        #             mode="number",
-        #             value=value,
-        #             title={"text": f"<b>{title}</b>"},
-        #             number={"font": {"size": 45, "color": color}},
-        #             domain={'x': [0, 1], 'y': [0, 1]}
-        #         ))
-        #         fig.update_layout(
-        #             margin=dict(l=20, r=20, t=40, b=20),
-        #             height=200,
-        #         )
-        #         return fig
-        #     # Create the KPI card figure
-        #     fig = create_card("Sales", total_sales, "coral")
-        #     # Display the figure in Streamlit
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # # Profits metric
-        # with col3:
-        #     total_profits = order_details['Profits'].sum()
-        #     def create_card(title, value, color):
-        #         fig = go.Figure(go.Indicator(
-        #             mode="number",
-        #             value=value,
-        #             title={"text": f"<b>{title}</b>"},
-        #             number={"font": {"size": 45, "color": color}},
-        #             domain={'x': [0, 1], 'y': [0, 1]}
-        #         ))
-        #         fig.update_layout(
-        #             margin=dict(l=20, r=20, t=40, b=20),
-        #             height=200,
-        #         )
-        #         return fig
-        #     # Create the KPI card figure
-        #     fig = create_card("Profits", total_profits, "coral")
-        #
-        #     # Display the figure in Streamlit
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # # Revenue metric
-        # with col4:
-        #     total_revenue = order_details["Total Retail Price for This Order"].sum().round()
-        #     def create_card(title, value, color):
-        #         fig = go.Figure(go.Indicator(
-        #             mode="number",
-        #             value=value,
-        #             title={"text": f"<b>{title}</b>"},
-        #             number={"font": {"size": 45, "color": color}},
-        #             domain={'x': [0, 1], 'y': [0, 1]}
-        #         ))
-        #         fig.update_layout(
-        #             margin=dict(l=20, r=20, t=40, b=20),
-        #             height=200,
-        #         )
-        #         return fig
-        #     # Create the KPI card figure
-        #     fig = create_card("Revenue", total_revenue, "coral")
-        #     # Display the figure in Streamlit
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # st.subheader("YOY Growth")
-        # st.markdown("___")
-        # col1, col2 = st.columns([1, 2], gap="small")
-        #
-        # order_details["year"] = order_details["Date Order was placed"].dt.year
-        # yoy_sales = order_details.groupby('year')['Quantity Ordered'].sum().reset_index()
-        # yoy_sales['Sales YOY'] = yoy_sales['Quantity Ordered'].pct_change() * 100
-        # yoy_sales['Sales YOY'] = yoy_sales['Sales YOY'].fillna(0).round(2).map(lambda x: f'{x:.2f}%')
-        # yoy_sales = yoy_sales[["year", "Sales YOY"]]
-        #
-        # yoy_profits = order_details.groupby('year')['Profits'].sum().reset_index()
-        # yoy_profits["Profits YOY"] = yoy_profits['Profits'].pct_change() * 100
-        # yoy_profits["Profits YOY"] = yoy_profits["Profits YOY"].fillna(0).round(2).map(lambda x: f'{x:.2f}%')
-        # yoy_profits = yoy_profits[["year", "Profits YOY"]]
-        #
-        # yoy_revenue = order_details.groupby('year')['Total Retail Price for This Order'].sum().reset_index()
-        # yoy_revenue["Revenue YOY"] = yoy_revenue["Total Retail Price for This Order"].pct_change() * 100
-        # yoy_revenue["Revenue YOY"] = yoy_revenue["Revenue YOY"].fillna(0).round(2).map(lambda x: f'{x:.2f}%')
-        # yoy_revenue = yoy_revenue[["year", "Revenue YOY"]]
-        #
-        # yoy_df = pd.merge(yoy_sales, yoy_profits, how='left', on='year')
-        # yoy_df = pd.merge(yoy_df, yoy_revenue, how='left', on='year')
-        # yoy_df.rename(columns={'year': 'Years'}, inplace=True)
-        # yoy_df['Years'] = yoy_df['Years'].astype(str)
-        # with col1:
-        #     st.write(yoy_df)
-        #     st.write("We can see here year over year growth & loss in sales, profits, revenue & then we can "
-        #              "visualize this in the plot.")
-        #
-        # with col2:
-        #     # Convert YoY columns to numeric values for plotting
-        #     yoy_df['Sales YOY'] = yoy_df['Sales YOY'].str.rstrip('%').astype(float)
-        #     yoy_df['Profits YOY'] = yoy_df['Profits YOY'].str.rstrip('%').astype(float)
-        #     yoy_df['Revenue YOY'] = yoy_df['Revenue YOY'].str.rstrip('%').astype(float)
-        #
-        #     # Create a line chart with Plotly
-        #     fig = px.line(yoy_df, x='Years', y=['Sales YOY', 'Profits YOY', 'Revenue YOY'],
-        #                   # title='Year-over-Year Growth',
-        #                   labels={'value': 'YoY Growth (%)', 'variable': 'Metric'},
-        #                   markers=True)
-        #
-        #     # # Update the layout for better readability
-        #     fig.update_layout(
-        #         xaxis_title='Year',
-        #         yaxis_title='YoY Growth (%)',
-        #         legend_title='Metrics'
-        #     )
-        #     st.plotly_chart(fig, use_container_width=False)
-        #
-        # st.subheader("Monthly Growth")
-        # st.markdown("___")
-        # order_details["Months"] = order_details["Date Order was placed"].dt.month
-        #
-        # monthly_data = order_details.groupby("Months")[
-        #     ["Quantity Ordered", "Total Retail Price for This Order", "Profits"]].sum().reset_index()
-        #
-        # fig = px.line(monthly_data, x='Months', y=['Quantity Ordered', 'Total Retail Price for This Order', 'Profits'],
-        #               # title='Monthly Growth',
-        #               labels={'value': 'Values', 'Months': 'Months'},
-        #               markers=True,
-        #               height=250)
-        # st.plotly_chart(fig, use_container_width=True)
-        #
-        # st.subheader("Customer Relation")
-        # st.markdown("___")
-        # col1, col2, col3 = st.columns(3, gap="small")
-        #
-        # with col1:
-        #     customer_distribution = order_details["Customer Status"].value_counts().reset_index()
-        #     fig = px.pie(customer_distribution, values="count", names='Customer Status', title='Customers distribution')
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # with col2:
-        #     order_details['Delivery Time (Days)'] = (
-        #             order_details['Delivery Date'] - order_details['Date Order was placed']).dt.days
-        #     average_time_to_deliver = order_details.groupby("Customer Status")[
-        #         "Delivery Time (Days)"].mean().reset_index()
-        #     fig = px.bar(average_time_to_deliver,
-        #                  x='Customer Status',
-        #                  y='Delivery Time (Days)',
-        #                  title='Average Day to Deliver by Customer Status',
-        #                  width=100,  # Set figure width
-        #                  height=350,  # Set figure height
-        #                  )
-        #     fig.update_traces(marker=dict(line=dict(width=2)),  # Customize bar width
-        #                       selector=dict(type='bar')
-        #                       )
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # with col3:
-        #     top_suppliers = order_details.groupby("Customer ID")["Quantity Ordered"].sum().reset_index() \
-        #         .sort_values(by="Quantity Ordered", ascending=False).head(10)
-        #
-        #     fig = px.pie(top_suppliers, values="Quantity Ordered", names='Customer ID', title='Top 10 Customers')
-        #
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # st.subheader("Product & Supplier Value")
-        # st.markdown("___")
-        # col1, col2 = st.columns(2, gap="small")
-        #
-        # with (col1):
-        #     revenue_products = merge_data.groupby("Product Category")[
-        #         "Total Retail Price for This Order"].sum().reset_index(
-        #     ).sort_values(by = 'Total Retail Price for This Order',ascending = False)
-        #     # Create bar chart using Plotly
-        #     fig = px.bar(revenue_products, x='Product Category', y='Total Retail Price for This Order',
-        #                  title='Revenue by products',
-        #                  labels={'x': 'Product Category', 'y': 'Total Retail Price for This Order'})
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # with (col2):
-        #     top_suppliers = merge_data.groupby('Supplier Country')["Supplier Name"].nunique(
-        #     ).reset_index().sort_values(by="Supplier Name", ascending=False)
-        #
-        #     fig = go.Figure(
-        #         data=[go.Pie(labels=top_suppliers['Supplier Name'], values=top_suppliers['Supplier Name'], hole=0.5)])
-        #
-        #     # Update layout for title and others
-        #     fig.update_layout(title='Top 10 Suppliers Distribution')
-        #     st.plotly_chart(fig, use_container_width=True)
-        #
-        # # Define the function to get country name
-        # def get_country_name(country_code):
-        #     try:
-        #         country = pycountry.countries.get(alpha_2=country_code)
-        #         if country:
-        #             return country.name
-        #         else:
-        #             return "Unknown"
-        #     except:
-        #         return "Unknown"
-        #
-        # # Assuming merge_data DataFrame is already created and has a 'Supplier Country' column
-        # merge_data['CountryName'] = merge_data['Supplier Country'].apply(get_country_name)
-        #
-        # # Count the occurrences of each country
-        # supplier_country = merge_data['CountryName'].value_counts().reset_index()
-        # supplier_country.columns = ['CountryName', 'Count']
-        #
-        # # Create the choropleth map
-        # fig = px.choropleth(
-        #     supplier_country,
-        #     locations='CountryName',
-        #     locationmode='country names',
-        #     color='Count',
-        #     hover_name='CountryName',
-        #     color_continuous_scale=px.colors.sequential.Plasma,
-        #     title='Supplier Countries'
-        # )
-        # st.plotly_chart(fig)
-        #
-        # st.markdown("___")
-        # col1, col2, = st.columns(2, gap="small")
-        #
-        # with col1:
-        #     st.subheader("Insights:")
-        #     st.markdown("""
-        #     Over the past five years, the company has demonstrated consistent growth in both sales and profits.
-        #     The product categories with the highest revenue are Assorted Sports Articles, Clothes, and Outdoors
-        #     accounting for a significant portion of the total revenue.Categories with lower revenue, such as
-        #     Swim Sports and Indoor Sports, may represent growth opportunities that could be explored further.
-        #
-        #     Silver customers, the largest segment, make up 48% of our customer base. Gold customers are close behind,
-        #     with 47% in total. Platinum customers, while fewer in percent at 5% represent a valuable segment with high
-        #     potential for increased engagement.
-        #
-        #     The majority of suppliers are based in the United States, making it the primary source of products.
-        #     Most deliveries are made within one day, but a few outliers take longer, possibly affecting customer
-        #     satisfaction. Investigate and streamline the delivery process to maintain consistency.
-        #     """)
-        #
-        # with col2:
-        #     st.subheader("Recommendations:")
-        #     st.markdown("""
-        #     Customer Satisfaction Enhancement Focus on strategies to enhance customer satisfaction, such as
-        #     improving product quality, customer service, and post-purchase support.
-        #
-        #     Supplier Relationship Management Strengthen relationships with the top suppliers and explore
-        #     opportunities for strategic partnerships, bulk discounts, or improved terms.
-        #
-        #     Optimize Delivery Process Investigate why a small percentage of deliveries take longer than
-        #     one day and work on process optimization to ensure timely and consistent deliveries.
-        #     """)
-        #
-        # st.markdown(
-        #     """
-        #     <style>
-        #     .footer {
-        #         position: fixed;
-        #         bottom: 0;
-        #         left: 0;
-        #         width: 100%;
-        #         background-color: #f4f4f4;
-        #         padding: 10px 0;
-        #         text-align: center;
-        #     }
-        #     .up-arrow {
-        #         position: absolute;
-        #         top: 10px;
-        #         right: 10px;
-        #         cursor: pointer;
-        #     }
-        #     </style>
-        #     """
-        #     , unsafe_allow_html=True
-        # )
-        #
-        # st.markdown(
-        #     """
-        #     <script>
-        #     function scrollToTop() {
-        #         window.scrollTo({
-        #             top: 0,
-        #             behavior: 'smooth'
-        #         });
-        #     }
-        #     </script>
-        #     <div class="footer">
-        #         <a href="https://github.com/yourusername"><img src="github-logo.png" width="30" height="30"></a>
-        #         &nbsp;&nbsp;&nbsp;&nbsp;
-        #         <a href="mailto:sjpradan@gmail.com"><img src="gmail.png" width="30" height="30"></a>
-        #         &nbsp;&nbsp;&nbsp;&nbsp;
-        #         <a href="https://linkedin.com/yourusername"><img src="linkedin.png" width="30" height="30"></a>
-        #         <div class="up-arrow" onclick="scrollToTop()">
-        #             <img src="uparrow.png" width="30" height="30">
-        #         </div>
-        #     </div>
-        #     """
-        #     , unsafe_allow_html=True
-        # )
+        col1, col2, col3, col4 = st.columns(4, gap="small")
+
+        # Customers metric
+        with col1:
+            total_customers = order_details["Customer ID"].nunique()
+            def create_card(title, value, color):
+                fig = go.Figure(go.Indicator(
+                    mode="number",
+                    value=value,
+                    title={"text": f"<b>{title}</b>"},
+                    number={"font": {"size": 45, "color": color,"family": "Arial, sans-serif"}},
+                    domain={'x': [0, 1], 'y': [0, 1]}
+                ))
+                fig.update_layout(
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    height=200,
+                )
+                return fig
+            # Create the KPI card figure
+            fig = create_card("Customers", total_customers, "coral")
+            # Display the figure in Streamlit
+            st.plotly_chart(fig, use_container_width=True)
+
+        # Sales metric
+        with col2:
+            total_sales = order_details["Quantity Ordered"].sum()
+            def create_card(title, value, color):
+                fig = go.Figure(go.Indicator(
+                    mode="number",
+                    value=value,
+                    title={"text": f"<b>{title}</b>"},
+                    number={"font": {"size": 45, "color": color}},
+                    domain={'x': [0, 1], 'y': [0, 1]}
+                ))
+                fig.update_layout(
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    height=200,
+                )
+                return fig
+            # Create the KPI card figure
+            fig = create_card("Sales", total_sales, "coral")
+            # Display the figure in Streamlit
+            st.plotly_chart(fig, use_container_width=True)
+
+        # Profits metric
+        with col3:
+            total_profits = order_details['Profits'].sum()
+            def create_card(title, value, color):
+                fig = go.Figure(go.Indicator(
+                    mode="number",
+                    value=value,
+                    title={"text": f"<b>{title}</b>"},
+                    number={"font": {"size": 45, "color": color}},
+                    domain={'x': [0, 1], 'y': [0, 1]}
+                ))
+                fig.update_layout(
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    height=200,
+                )
+                return fig
+            # Create the KPI card figure
+            fig = create_card("Profits", total_profits, "coral")
+
+            # Display the figure in Streamlit
+            st.plotly_chart(fig, use_container_width=True)
+
+        # Revenue metric
+        with col4:
+            total_revenue = order_details["Total Retail Price for This Order"].sum().round()
+            def create_card(title, value, color):
+                fig = go.Figure(go.Indicator(
+                    mode="number",
+                    value=value,
+                    title={"text": f"<b>{title}</b>"},
+                    number={"font": {"size": 45, "color": color}},
+                    domain={'x': [0, 1], 'y': [0, 1]}
+                ))
+                fig.update_layout(
+                    margin=dict(l=20, r=20, t=40, b=20),
+                    height=200,
+                )
+                return fig
+            # Create the KPI card figure
+            fig = create_card("Revenue", total_revenue, "coral")
+            # Display the figure in Streamlit
+            st.plotly_chart(fig, use_container_width=True)
+
+        st.subheader("YOY Growth")
+        st.markdown("___")
+        col1, col2 = st.columns([1, 2], gap="small")
+
+        order_details["year"] = order_details["Date Order was placed"].dt.year
+        yoy_sales = order_details.groupby('year')['Quantity Ordered'].sum().reset_index()
+        yoy_sales['Sales YOY'] = yoy_sales['Quantity Ordered'].pct_change() * 100
+        yoy_sales['Sales YOY'] = yoy_sales['Sales YOY'].fillna(0).round(2).map(lambda x: f'{x:.2f}%')
+        yoy_sales = yoy_sales[["year", "Sales YOY"]]
+
+        yoy_profits = order_details.groupby('year')['Profits'].sum().reset_index()
+        yoy_profits["Profits YOY"] = yoy_profits['Profits'].pct_change() * 100
+        yoy_profits["Profits YOY"] = yoy_profits["Profits YOY"].fillna(0).round(2).map(lambda x: f'{x:.2f}%')
+        yoy_profits = yoy_profits[["year", "Profits YOY"]]
+
+        yoy_revenue = order_details.groupby('year')['Total Retail Price for This Order'].sum().reset_index()
+        yoy_revenue["Revenue YOY"] = yoy_revenue["Total Retail Price for This Order"].pct_change() * 100
+        yoy_revenue["Revenue YOY"] = yoy_revenue["Revenue YOY"].fillna(0).round(2).map(lambda x: f'{x:.2f}%')
+        yoy_revenue = yoy_revenue[["year", "Revenue YOY"]]
+
+        yoy_df = pd.merge(yoy_sales, yoy_profits, how='left', on='year')
+        yoy_df = pd.merge(yoy_df, yoy_revenue, how='left', on='year')
+        yoy_df.rename(columns={'year': 'Years'}, inplace=True)
+        yoy_df['Years'] = yoy_df['Years'].astype(str)
+        with col1:
+            st.write(yoy_df)
+            st.write("We can see here year over year growth & loss in sales, profits, revenue & then we can "
+                     "visualize this in the plot.")
+
+        with col2:
+            # Convert YoY columns to numeric values for plotting
+            yoy_df['Sales YOY'] = yoy_df['Sales YOY'].str.rstrip('%').astype(float)
+            yoy_df['Profits YOY'] = yoy_df['Profits YOY'].str.rstrip('%').astype(float)
+            yoy_df['Revenue YOY'] = yoy_df['Revenue YOY'].str.rstrip('%').astype(float)
+
+            # Create a line chart with Plotly
+            fig = px.line(yoy_df, x='Years', y=['Sales YOY', 'Profits YOY', 'Revenue YOY'],
+                          # title='Year-over-Year Growth',
+                          labels={'value': 'YoY Growth (%)', 'variable': 'Metric'},
+                          markers=True)
+
+            # # Update the layout for better readability
+            fig.update_layout(
+                xaxis_title='Year',
+                yaxis_title='YoY Growth (%)',
+                legend_title='Metrics'
+            )
+            st.plotly_chart(fig, use_container_width=False)
+
+        st.subheader("Monthly Growth")
+        st.markdown("___")
+        order_details["Months"] = order_details["Date Order was placed"].dt.month
+
+        monthly_data = order_details.groupby("Months")[
+            ["Quantity Ordered", "Total Retail Price for This Order", "Profits"]].sum().reset_index()
+
+        fig = px.line(monthly_data, x='Months', y=['Quantity Ordered', 'Total Retail Price for This Order', 'Profits'],
+                      # title='Monthly Growth',
+                      labels={'value': 'Values', 'Months': 'Months'},
+                      markers=True,
+                      height=250)
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.subheader("Customer Relation")
+        st.markdown("___")
+        col1, col2, col3 = st.columns(3, gap="small")
+
+        with col1:
+            customer_distribution = order_details["Customer Status"].value_counts().reset_index()
+            fig = px.pie(customer_distribution, values="count", names='Customer Status', title='Customers distribution')
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            order_details['Delivery Time (Days)'] = (
+                    order_details['Delivery Date'] - order_details['Date Order was placed']).dt.days
+            average_time_to_deliver = order_details.groupby("Customer Status")[
+                "Delivery Time (Days)"].mean().reset_index()
+            fig = px.bar(average_time_to_deliver,
+                         x='Customer Status',
+                         y='Delivery Time (Days)',
+                         title='Average Day to Deliver by Customer Status',
+                         width=100,  # Set figure width
+                         height=350,  # Set figure height
+                         )
+            fig.update_traces(marker=dict(line=dict(width=2)),  # Customize bar width
+                              selector=dict(type='bar')
+                              )
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col3:
+            top_suppliers = order_details.groupby("Customer ID")["Quantity Ordered"].sum().reset_index() \
+                .sort_values(by="Quantity Ordered", ascending=False).head(10)
+
+            fig = px.pie(top_suppliers, values="Quantity Ordered", names='Customer ID', title='Top 10 Customers')
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        st.subheader("Product & Supplier Value")
+        st.markdown("___")
+        col1, col2 = st.columns(2, gap="small")
+
+        with (col1):
+            revenue_products = merge_data.groupby("Product Category")[
+                "Total Retail Price for This Order"].sum().reset_index(
+            ).sort_values(by = 'Total Retail Price for This Order',ascending = False)
+            # Create bar chart using Plotly
+            fig = px.bar(revenue_products, x='Product Category', y='Total Retail Price for This Order',
+                         title='Revenue by products',
+                         labels={'x': 'Product Category', 'y': 'Total Retail Price for This Order'})
+            st.plotly_chart(fig, use_container_width=True)
+
+        with (col2):
+            top_suppliers = merge_data.groupby('Supplier Country')["Supplier Name"].nunique(
+            ).reset_index().sort_values(by="Supplier Name", ascending=False)
+
+            fig = go.Figure(
+                data=[go.Pie(labels=top_suppliers['Supplier Name'], values=top_suppliers['Supplier Name'], hole=0.5)])
+
+            # Update layout for title and others
+            fig.update_layout(title='Top 10 Suppliers Distribution')
+            st.plotly_chart(fig, use_container_width=True)
+
+        # Define the function to get country name
+        def get_country_name(country_code):
+            try:
+                country = pycountry.countries.get(alpha_2=country_code)
+                if country:
+                    return country.name
+                else:
+                    return "Unknown"
+            except:
+                return "Unknown"
+
+        # Assuming merge_data DataFrame is already created and has a 'Supplier Country' column
+        merge_data['CountryName'] = merge_data['Supplier Country'].apply(get_country_name)
+
+        # Count the occurrences of each country
+        supplier_country = merge_data['CountryName'].value_counts().reset_index()
+        supplier_country.columns = ['CountryName', 'Count']
+
+        # Create the choropleth map
+        fig = px.choropleth(
+            supplier_country,
+            locations='CountryName',
+            locationmode='country names',
+            color='Count',
+            hover_name='CountryName',
+            color_continuous_scale=px.colors.sequential.Plasma,
+            title='Supplier Countries'
+        )
+        st.plotly_chart(fig)
+
+        st.markdown("___")
+        col1, col2, = st.columns(2, gap="small")
+
+        with col1:
+            st.subheader("Insights:")
+            st.markdown("""
+            Over the past five years, the company has demonstrated consistent growth in both sales and profits.
+            The product categories with the highest revenue are Assorted Sports Articles, Clothes, and Outdoors
+            accounting for a significant portion of the total revenue.Categories with lower revenue, such as
+            Swim Sports and Indoor Sports, may represent growth opportunities that could be explored further.
+
+            Silver customers, the largest segment, make up 48% of our customer base. Gold customers are close behind,
+            with 47% in total. Platinum customers, while fewer in percent at 5% represent a valuable segment with high
+            potential for increased engagement.
+
+            The majority of suppliers are based in the United States, making it the primary source of products.
+            Most deliveries are made within one day, but a few outliers take longer, possibly affecting customer
+            satisfaction. Investigate and streamline the delivery process to maintain consistency.
+            """)
+
+        with col2:
+            st.subheader("Recommendations:")
+            st.markdown("""
+            Customer Satisfaction Enhancement Focus on strategies to enhance customer satisfaction, such as
+            improving product quality, customer service, and post-purchase support.
+
+            Supplier Relationship Management Strengthen relationships with the top suppliers and explore
+            opportunities for strategic partnerships, bulk discounts, or improved terms.
+
+            Optimize Delivery Process Investigate why a small percentage of deliveries take longer than
+            one day and work on process optimization to ensure timely and consistent deliveries.
+            """)
+
+        st.markdown(
+            """
+            <style>
+            .footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: #f4f4f4;
+                padding: 10px 0;
+                text-align: center;
+            }
+            .up-arrow {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
+            }
+            </style>
+            """
+            , unsafe_allow_html=True
+        )
+
+        st.markdown(
+            """
+            <script>
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+            </script>
+            <div class="footer">
+                <a href="https://github.com/yourusername"><img src="github-logo.png" width="30" height="30"></a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="mailto:sjpradan@gmail.com"><img src="gmail.png" width="30" height="30"></a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="https://linkedin.com/yourusername"><img src="linkedin.png" width="30" height="30"></a>
+                <div class="up-arrow" onclick="scrollToTop()">
+                    <img src="uparrow.png" width="30" height="30">
+                </div>
+            </div>
+            """
+            , unsafe_allow_html=True
+        )
 
     def Cohort_Analysis_Dashboard():
         st.title("Projects - Page 1")
