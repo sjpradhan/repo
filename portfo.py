@@ -459,7 +459,7 @@ def main():
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="https://www.linkedin.com/in/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/linkedin.png width="30" height="30"></a>
                 <div class="up-arrow" onclick="scrollToTop()">
-                    <img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/uparrow.png width="30" height="30">
+                    <img src="" width="30" height="30">
                 </div>
             </div>
             """
