@@ -627,20 +627,42 @@ def Home():
         for future growth and profitability.
         """)
     except Exception as e:
-        st.write(f"error in Dasboard1 {e}")
+        st.error(f"error in Dasboard1 {e}")
         pass
 
 
     st.subheader("Customer Retention Analysis Dashboard")
 
     try:
-        if st.button("View Customer Retention Dashboard"):
-            # Replace the URL with your LinkedIn profile URL
-            st.markdown("[Projet1](https://www.linkedin.com/your-profile)")
-        dashboard = r"C:\Users\satya\PycharmProjects\portflios\Dashboard\Slide1.PNG"
-        st.image(dashboard,use_column_width=True)
-        st.write("write description here.....")
-    except:
+        customer_retention_dashboard = "https://raw.githubusercontent.com/sjpradhan/repo/master/Dashboard/Dashbaord2.png"
+
+        # Fetch the image from the URL
+        response = requests.get(customer_retention_dashboard)
+
+        # Open the image using PIL
+        customer_retention_dashboard = Image.open(BytesIO(response.content))
+
+        st.image(customer_retention_dashboard, use_column_width=True)
+        st.markdown("[__Retail Performance Dashboard__](https://sjpradhan.github.io/portfolio/)")
+        st.write("""
+        The retail business has been operating for five years, successfully selling over 100K products across 
+        various categories including Children's Products, Clothes & Shoes, Outdoors Products, and Sports Products. 
+        To further expansion, stakeholders are keen on leveraging data-driven insights from both supplier and 
+        sales data.
+
+        Initial steps involve cleaning the data and performing feature engineering to extract meaningful insights. 
+        Utilizing a dashboard, I have present segmented findings across various dimensions such as year-over-year sales,
+        profits, and revenue. 
+
+        Key performance indicators (KPIs) prominently displayed, encompassing total customers, total sales, 
+        total profits, and total revenue. Additionally, I have delve into month-over-month and year-over-year growth 
+        trends, Further analysis will spotlight supplier origins and identify top-performing suppliers. The dashboard 
+        highlight products generating the highest revenue, along with their average delivery times. Lastly, 
+        insights provided on the most frequent and valuable customers, aiding in strategic decision-making 
+        for future growth and profitability.
+        """)
+    except Exception as e:
+        st.error(f"error in dashboard2 {e}")
         pass
 
 # Projects in home section--------------------------------------------------------------------------
