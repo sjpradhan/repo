@@ -276,7 +276,8 @@ def main():
                                   selector=dict(type='bar')
                                   )
                 st.plotly_chart(fig, use_container_width=True)
-        except:
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
             pass
 
         try:
