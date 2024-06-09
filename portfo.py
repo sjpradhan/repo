@@ -262,6 +262,9 @@ def main():
 
         with col2:
             try:
+                order_details['Delivery Date'] = pd.to_datetime(order_details['Delivery Date'])
+                order_details['Date Order was placed'] = pd.to_datetime(order_details['Date Order was placed'])
+
                 order_details['Delivery Time (Days)'] = (
                         order_details['Delivery Date'] - order_details['Date Order was placed']).dt.days
                 average_time_to_deliver = order_details.groupby("Customer Status")[
