@@ -581,36 +581,6 @@ def Home():
     except:
         pass
 
-
-    # col1, col2 = st.columns(2)
-    # try:
-    #     with col1:
-    #         video_url_1 = "https://raw.githubusercontent.com/sjpradhan/repo/master/Vidos/Power%20BI%20Dashboard%20Design%20with%20Figma.mp4"
-    #         st.video(video_url_1)
-    #
-    # except Exception as e:
-    #     st.error(f"error in importing first video {e}")
-    #     pass
-    #
-    # try:
-    #     with col2:
-    #         video_url_2 = "https://raw.githubusercontent.com/sjpradhan/repo/master/Vidos/Power%20BI%20Dashboard.mp4"
-    #         st.video(video_url_2)
-    #
-    # except Exception as e:
-    #     st.error(f"error in importing second video {e}")
-    #     pass
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        video_url_1 = "https://raw.githubusercontent.com/sjpradhan/repo/master/Videos/Power%20BI%20Dashboard%20Design%20with%20Figma.mp4"
-        st.video(video_url_1)
-
-    with col2:
-        video_url_2 = "https://raw.githubusercontent.com/sjpradhan/repo/master/Videos/Power%20BI%20Dashboard.mp4"
-        st.video(video_url_2)
-
 # Dashboard in home section-------------------------------------------------------------------------
     st.markdown(
         """
