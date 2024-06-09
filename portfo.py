@@ -599,8 +599,15 @@ def Home():
     st.markdown("---")
 
     try:
-        dashboard = r"C:\Users\satya\PycharmProjects\portflios\Dashboard\Dashbaord1.png"
-        st.image(dashboard,use_column_width=True)
+        retail_dashboard = "https://raw.githubusercontent.com/sjpradhan/repo/master/Dashboard/Dashbaord1.png"
+
+        # Fetch the image from the URL
+        response = requests.get(retail_dashboard)
+
+        # Open the image using PIL
+        retail_dashboard = Image.open(BytesIO(response.content))
+
+        st.image(retail_dashboard,use_column_width=True)
         st.markdown("[__Retail Performance Dashboard__](https://sjpradhan.github.io/portfolio/)")
         st.write("""
         The retail business has been operating for five years, successfully selling over 100K products across 
@@ -619,7 +626,8 @@ def Home():
         insights provided on the most frequent and valuable customers, aiding in strategic decision-making 
         for future growth and profitability.
         """)
-    except:
+    except Exception as e:
+        st.write(f"error in Dasboard1 {e}")
         pass
 
 
