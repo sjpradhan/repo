@@ -634,7 +634,7 @@ def Home():
     st.subheader("Customer Retention Analysis Dashboard")
 
     try:
-        customer_retention_dashboard = "https://raw.githubusercontent.com/sjpradhan/repo/master/Dashboard/Dashbaord2.png"
+        customer_retention_dashboard = "https://raw.githubusercontent.com/sjpradhan/repo/master/Dashboard/Dashbaord2.PNG"
 
         # Fetch the image from the URL
         response = requests.get(customer_retention_dashboard)
