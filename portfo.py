@@ -35,7 +35,6 @@ def main():
         @st.cache_data()
         def load_order_details():
             order_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_orders.xlsx"
-
             order_details = pd.read_excel(order_details_path)
 
             replace_dict = {'SILVER': 'Silver', 'GOLD': 'Gold', 'PLATINUM': 'Platinum'}
@@ -51,7 +50,6 @@ def main():
         @st.cache_data()
         def load_and_merge_data():
             suppler_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_product_supplier.xlsx"
-
             supplier_details = pd.read_excel(suppler_details_path)
 
             merge_data = pd.merge(order_details, supplier_details, on="Product ID", how="inner")
@@ -456,7 +454,12 @@ def Home():
     col1, col2 = st.columns(2)
 
     # Define Image
-    profile_photo = r"C:\Users\satya\PycharmProjects\portflios\Profile\Profile picture.jpg"
+    profile_photo = "https://raw.githubusercontent.com/sjpradhan/repo/master/Profile/Profile%20picture.jpg"
+
+    # Fetch the image from the URL
+    response = requests.get(profile_photo)
+
+    profile_photo = Image.open(BytesIO(response.content))
     try:
         # Add content to the first column
         with col1:
