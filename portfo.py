@@ -32,7 +32,7 @@ def main():
     # Sub Page For Dashboard
     def retail_performance_dashboard():
 
-        @st.cache_data()
+        @st.cache_resource
         def load_order_details():
             order_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_orders.xlsx"
             order_details = pd.read_excel(order_details_path)
@@ -47,7 +47,7 @@ def main():
 
         order_details = load_order_details()
 
-        @st.cache_data()
+        @st.cache_resource
         def load_and_merge_data():
             suppler_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_product_supplier.xlsx"
             supplier_details = pd.read_excel(suppler_details_path)
