@@ -460,6 +460,7 @@ def Home():
     response = requests.get(profile_photo)
 
     profile_photo = Image.open(BytesIO(response.content))
+
     try:
         # Add content to the first column
         with col1:
@@ -476,23 +477,7 @@ def Home():
     try:
         # Add content to the second column
         with col2:
-            # Display the image using HTML img tag and apply CSS animation
-            st.markdown(f"""
-                        <img src="{profile_photo}" class="zooming-image" style="width:100%; animation: zoomIn 5s ease-in-out;">
-                        <style>
-                            @keyframes zoomIn {{
-                                from {{
-                                    transform: scale(1);
-                                }}
-                                to {{
-                                    transform: scale(1.1);
-                                }}
-                            }}
-                            .zooming-image {{
-                                animation-fill-mode: forwards;
-                            }}
-                        </style>
-                    """, unsafe_allow_html=True)
+            st.image(profile_photo)
     except:
         pass
 
