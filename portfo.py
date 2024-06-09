@@ -163,6 +163,7 @@ def main():
         st.markdown("___")
         col1, col2 = st.columns([1, 2], gap="small")
 
+        order_details["Date Order was placed"] = pd.to_datetime(order_details["Date Order was placed"])
         order_details["year"] = order_details["Date Order was placed"].dt.year
         yoy_sales = order_details.groupby('year')['Quantity Ordered'].sum().reset_index()
         yoy_sales['Sales YOY'] = yoy_sales['Quantity Ordered'].pct_change() * 100
