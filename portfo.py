@@ -54,8 +54,7 @@ def main():
             suppler_details_path = ("https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/"
                                   "raw_data_product_supplier.xlsx")
 
-            supplier_details = pd.read_excel(
-                r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_product_supplier.xlsx")
+            supplier_details = pd.read_excel(suppler_details_path)
 
             merge_data = pd.merge(order_details, supplier_details, on="Product ID", how="inner")
 
