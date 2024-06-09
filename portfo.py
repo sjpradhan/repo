@@ -581,6 +581,18 @@ def Home():
     except:
         pass
 
+   try:
+        # Create two columns
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.video()
+
+        with col2:
+            st.video()
+   except:
+       pass
+
 # Dashboard in home section-------------------------------------------------------------------------
     st.markdown(
         """
@@ -643,7 +655,7 @@ def Home():
         customer_retention_dashboard = Image.open(BytesIO(response.content))
 
         st.image(customer_retention_dashboard, use_column_width=True)
-        st.markdown("[__Retail Performance Dashboard__](https://sjpradhan.github.io/portfolio/)")
+        st.markdown("[__Customer Retention Dashboard__](https://sjpradhan.github.io/portfolio/)")
         st.write("""
         The retail business has been operating for five years, successfully selling over 100K products across 
         various categories including Children's Products, Clothes & Shoes, Outdoors Products, and Sports Products. 
