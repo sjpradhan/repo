@@ -419,6 +419,7 @@ def main():
             st.error(f"error in writing insights & recommendations {e}")
             pass
 
+        # Footer
         st.markdown(
             """
             <style>
@@ -432,9 +433,9 @@ def main():
                 text-align: center;
             }
             .up-arrow {
-                position: absolute;
+                position: fixed;
                 top: 10px;
-                right: 10px;
+                right: 50px;
                 cursor: pointer;
             }
             </style>
@@ -442,6 +443,7 @@ def main():
             , unsafe_allow_html=True
         )
 
+        #Icons
         st.markdown(
             """
             <script>
@@ -459,7 +461,7 @@ def main():
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="https://www.linkedin.com/in/sjpradhan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/linkedin.png width="30" height="30"></a>
                 <div class="up-arrow" onclick="scrollToTop()">
-                    <img src="" width="30" height="30">
+                    <img src= https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/uparrow.png width="30" height="30">
                 </div>
             </div>
             """
