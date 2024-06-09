@@ -1,4 +1,6 @@
 import pycountry
+import requests
+from io import BytesIO
 import pandas as pd
 from PIL import Image
 import streamlit as st
@@ -8,14 +10,23 @@ import plotly.graph_objects as go
 def main():
     """Main function to define the structure of the portfolio."""
 
-    # Set page title and icon
-    profile_icon = Image.open(r"C:\Users\satya\PycharmProjects\portflios\Icons\user.png")
-    st.set_page_config(page_title="Satyajeet Portfolio", page_icon=profile_icon,layout = "wide")
+    profile_icon = "https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/user.png"
+
+    # Fetch the image from the URL
+    response = requests.get(profile_icon)
+
+    # Open the image using PIL
+    profile_icon = Image.open(BytesIO(response.content))
+    st.set_page_config(page_title="Satyajit Portfolio", page_icon=profile_icon,layout = "wide")
 
     # Load Image
-    portfolio_icon = r"C:\Users\satya\PycharmProjects\portflios\Profile\Portfolio logo.png"
+    portfolio_icon = "https://raw.githubusercontent.com/sjpradhan/repo/master/Profile/Portfolio%20logo.png"
 
-    # Display the image at the top left corner
+    # Fetch the image from the URL
+    response = requests.get(portfolio_icon)
+
+    portfolio_icon = Image.open(BytesIO(response.content))
+
     st.image(portfolio_icon, use_column_width=False, width=370, caption="")
 
     # Sub Page For Dashboard
