@@ -34,7 +34,7 @@ def main():
 
         @st.cache_resource
         def load_order_details():
-            order_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_orders.xlsx"
+            order_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_orders.csv"
             order_details = pd.read_excel(order_details_path)
 
             return order_details
