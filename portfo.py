@@ -453,7 +453,7 @@ def main():
             }
             </script>
             <div class="footer">
-                <a href="https://github.com/yourusername"><img src="github-logo.png" width="30" height="30"></a>
+                <a href="https://github.com/sjpradan"><img src=https://raw.githubusercontent.com/sjpradhan/repo/master/Icons/github-logo.png width="30" height="30"></a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="mailto:sjpradan@gmail.com"><img src="gmail.png" width="30" height="30"></a>
                 &nbsp;&nbsp;&nbsp;&nbsp;
