@@ -32,13 +32,12 @@ def main():
     # Sub Page For Dashboard
     def retail_performance_dashboard():
 
-        # Read Dataset
-        order_details = pd.read_excel(
-            r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_orders_100.xlsx")
-
         @st.cache_data()
         def load_order_details():
-            order_details = pd.read_excel(r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_orders.xlsx")
+            order_details_path = ("https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/"
+                                  "raw_data_orders.xlsx")
+
+            order_details = pd.read_excel(order_details_path)
 
             replace_dict = {'SILVER': 'Silver', 'GOLD': 'Gold', 'PLATINUM': 'Platinum'}
             order_details['Customer Status'] = order_details['Customer Status'].replace(replace_dict)
@@ -52,6 +51,8 @@ def main():
 
         @st.cache_data()
         def load_and_merge_data():
+            suppler_details_path = ("https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/"
+                                  "raw_data_product_supplier.xlsx")
 
             supplier_details = pd.read_excel(
                 r"C:\Users\satya\PycharmProjects\portflios\Data\raw_data_product_supplier.xlsx")
