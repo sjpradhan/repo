@@ -37,38 +37,38 @@ def main():
             order_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_orders.xlsx"
             order_details = pd.read_excel(order_details_path)
 
-            replace_dict = {'SILVER': 'Silver', 'GOLD': 'Gold', 'PLATINUM': 'Platinum'}
-            order_details['Customer Status'] = order_details['Customer Status'].replace(replace_dict)
-
-            order_details["Profits"] = (
-                    order_details["Total Retail Price for This Order"] - order_details["Cost Price Per Unit"])
-
             return order_details
 
         order_details = load_order_details()
 
-        @st.cache_resource
-        def load_and_merge_data():
-            suppler_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_product_supplier.xlsx"
-            supplier_details = pd.read_excel(suppler_details_path)
+        replace_dict = {'SILVER': 'Silver', 'GOLD': 'Gold', 'PLATINUM': 'Platinum'}
+        order_details['Customer Status'] = order_details['Customer Status'].replace(replace_dict)
 
-            merge_data = pd.merge(order_details, supplier_details, on="Product ID", how="inner")
+        order_details["Profits"] = (
+                order_details["Total Retail Price for This Order"] - order_details["Cost Price Per Unit"])
 
-            int_to_convert_text = ['Customer ID', 'Order ID', 'Product ID', 'Supplier ID']
-            merge_data[int_to_convert_text] = merge_data[int_to_convert_text].astype(str)
-
-            date_format = ['Date Order was placed', 'Delivery Date']
-            merge_data[date_format] = merge_data[date_format].apply(pd.to_datetime)
-            merge_data[date_format] = merge_data[date_format].apply(lambda x: x.dt.strftime('%d-%m-%Y'))
-
-            return merge_data
-
-        merge_data = load_and_merge_data()
-
-        # Setting up the Streamlit dashboard
-        st.title("Retail Performance Dashboard🛒")
-
-        st.subheader("KPIs")
+        # @st.cache_resource
+        # def load_and_merge_data():
+        #     suppler_details_path = "https://media.githubusercontent.com/media/sjpradhan/repo/master/Data/raw_data_product_supplier.xlsx"
+        #     supplier_details = pd.read_excel(suppler_details_path)
+        #
+        #     merge_data = pd.merge(order_details, supplier_details, on="Product ID", how="inner")
+        #
+        #     int_to_convert_text = ['Customer ID', 'Order ID', 'Product ID', 'Supplier ID']
+        #     merge_data[int_to_convert_text] = merge_data[int_to_convert_text].astype(str)
+        #
+        #     date_format = ['Date Order was placed', 'Delivery Date']
+        #     merge_data[date_format] = merge_data[date_format].apply(pd.to_datetime)
+        #     merge_data[date_format] = merge_data[date_format].apply(lambda x: x.dt.strftime('%d-%m-%Y'))
+        #
+        #     return merge_data
+        #
+        # merge_data = load_and_merge_data()
+        #
+        # # Setting up the Streamlit dashboard
+        # st.title("Retail Performance Dashboard🛒")
+        #
+        # st.subheader("KPIs")
 
         # col1, col2, col3, col4 = st.columns(4, gap="small")
         #
