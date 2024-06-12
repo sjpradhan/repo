@@ -560,7 +560,7 @@ def Home():
             st.subheader("Soft Skills")
             st.markdown("---")
             st.write("""
-                - Data Analysis ⭐⭐⭐⭐⭐
+                - Data Analysis ⭐⭐⭐⭐
                 - Machine Learning ⭐⭐⭐⭐⭐
                 - Data Visualization ⭐⭐⭐⭐⭐
                 - Python Programming ⭐⭐⭐⭐⭐
