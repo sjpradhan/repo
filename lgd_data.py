@@ -18,7 +18,7 @@ def main():
         return profile_icon
 
     # GitHub raw image URL
-    github_raw_image_url = "https://raw.githubusercontent.com/sjpradhan/App/master/Data/seo.png"
+    github_raw_image_url = "https://raw.githubusercontent.com/sjpradhan/lgd/master/Data/seo.png"
 
     # Call the function to fetch and process the image
     profile_icon = profile_icon(github_raw_image_url)
@@ -30,7 +30,7 @@ def main():
 # About States-------------------------------------------------------------------------------------------------|
 
     # Define Path & read csv file
-    path = "https://media.githubusercontent.com/media/sjpradhan/App/master/Data/State%20Details.csv"
+    path = "https://media.githubusercontent.com/media/sjpradhan/lgd/master/Data/State%20Details.csv"
     state_data = pd.read_csv(path)
 
     # Create Search bar
@@ -57,7 +57,7 @@ def main():
 # About Districts ---------------------------------------------------------------------------------------------|
 
     # Define Path & read csv file
-    path = "https://media.githubusercontent.com/media/sjpradhan/App/master/Data/District%20Details.csv"
+    path = "https://media.githubusercontent.com/media/sjpradhan/lgd/master/Data/District%20Details.csv"
     district_data = pd.read_csv(path)
 
     # Create Search bar
@@ -84,7 +84,7 @@ def main():
 # About Sub-Districts-------------------------------------------------------------------------------------------|
 
     # Define Path & read csv file
-    path = "https://media.githubusercontent.com/media/sjpradhan/App/master/Data/Sub-districts%20Details.csv"
+    path = "https://media.githubusercontent.com/media/sjpradhan/lgd/master/Data/Sub-districts%20Details.csv"
     sub_district_data = pd.read_csv(path)
 
     # Create Search bar
@@ -111,7 +111,7 @@ def main():
 # About Villages----------------------------------------------------------------------------------------------|
 
     # Define Path & read csv file
-    path = "https://media.githubusercontent.com/media/sjpradhan/App/master/Data/village%20Details.csv"
+    path = "https://media.githubusercontent.com/media/sjpradhan/lgd/master/Data/village%20Details.csv"
     village_data = pd.read_csv(path)
 
     # Create Search bar
